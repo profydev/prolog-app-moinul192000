@@ -29,6 +29,16 @@ describe("Sidebar Navigation", () => {
       cy.get("nav")
         .contains("Settings")
         .should("have.attr", "href", "/dashboard/settings");
+
+      // Test that support button opens a new email with the correct subject
+      cy.window().then((win) => {
+        cy.stub(win, "open").as("windowOpen");
+      });
+      cy.get("nav").contains("Support").click();
+      cy.get("@windowOpen").should(
+        "be.always.calledWith",
+        "mailto:support@prolog-app.com?subject=Support Request:"
+      );
     });
 
     it("is collapsible", () => {
